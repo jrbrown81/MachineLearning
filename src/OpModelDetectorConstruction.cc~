@@ -1,0 +1,506 @@
+//
+// ********************************************************************
+// Modified version of Luke's version of OpModel
+// 25x25x20mm3 CeBr3 coupled to 4x4 SiPM array, to replicate work of 
+// Dublin group presented in Ulyanov2017
+// 
+// J. Brown
+// 21/08/17
+// ********************************************************************
+//
+//
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#include "OpModelDetectorConstruction.hh"
+#include "G4VisAttributes.hh"
+#include "G4Material.hh"
+#include "G4Element.hh"
+#include "G4LogicalBorderSurface.hh"
+#include "G4LogicalSkinSurface.hh"
+#include "G4OpticalSurface.hh"
+#include "G4Box.hh"
+#include "G4LogicalVolume.hh"
+#include "G4ThreeVector.hh"
+#include "G4PVPlacement.hh"
+#include "G4SystemOfUnits.hh"
+#include "sipmSD.hh"
+#include "crystalSD.hh"
+#include "G4VSensitiveDetector.hh"
+#include "G4NistManager.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4UnitsTable.hh"
+#include "G4SubtractionSolid.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+OpModelDetectorConstruction::OpModelDetectorConstruction()
+ : G4VUserDetectorConstruction()
+{
+  fExpHall_x = fExpHall_y = fExpHall_z = 100.0*mm;
+  
+  fCrystal_x = fCrystal_y  =  25.0*mm;
+  fCrystal_z = 20.0*mm;
+
+  fSiPM_x = fSiPM_y = 29.0*mm;
+  fSiPM_z = 0.21*mm;
+   
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+OpModelDetectorConstruction::~OpModelDetectorConstruction(){;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
+{
+
+// Enable volume overlap checking
+  G4bool checkOverlaps = true; 
+
+// ------------- Materials -------------
+
+//Get the nist manager 
+  G4NistManager* nist = G4NistManager::Instance();
+  nist->SetVerbose(1);
+
+// Define CeBr3
+  G4Element* Ce = nist->FindOrBuildElement("Ce");
+  G4Element* Br = nist->FindOrBuildElement("Br");
+
+  G4double CeBr3_density = 5.2*g/cm3; // from Scionix
+  G4Material* CeBr3 = new G4Material("CeBr3",CeBr3_density, 2);
+  CeBr3->AddElement(Ce,1);
+  CeBr3->AddElement(Br,3);
+
+// Air
+  G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
+
+// Define Materials for Epoxy Cover of SiPM
+	G4Element* H = nist->FindOrBuildElement("H");
+	G4Element* C = nist->FindOrBuildElement("C");
+
+	G4double epoxy_density = 1.2*g/cm3;
+	G4Material* epoxy = new G4Material("epoxy",epoxy_density, 2);
+	epoxy->AddElement(H,2);
+	epoxy->AddElement(C,2);
+
+// Al
+  G4Material* Al = nist->FindOrBuildMaterial("G4_Al");
+// Glass
+	G4Material* glass =nist->FindOrBuildMaterial("G4_GLASS_PLATE");
+// PTFE 
+  G4Material* PTFE = nist->FindOrBuildMaterial("G4_TEFLON");
+
+//******************************************************************
+// ------------ Generate & Add Material Properties Table ------------
+//*****************************************************************
+  
+   G4double photonEnergy[] = {
+							2.786*eV,2.818*eV,2.850*eV,2.884*eV,2.918*eV,
+							2.952*eV,2.988*eV,3.024*eV,3.043*eV,3.062*eV,
+							3.081*eV,3.100*eV,3.119*eV,3.139*eV,3.163*eV,
+							3.179*eV,3.221*eV,3.263*eV,3.307*eV,3.351*eV,
+							3.397*eV,3.425*eV,3.444*eV,3.454*eV,3.464*eV,
+							3.473*eV,3.493*eV,3.523*eV,3.543*eV,3.594*eV,
+							3.647*eV,3.701*eV	};
+  
+	const G4int nEntries = sizeof(photonEnergy)/sizeof(G4double);
+
+//
+// Crystal
+//
+// Refractive index for CeBr3
+// Taken from Hellma, assume constant over range (probably not!)
+  G4double refractiveIndexCeBr3[] = {
+  						2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09,2.09,2.09,2.09,
+							2.09,2.09 };
+
+	assert(sizeof(refractiveIndexCeBr3) == sizeof(photonEnergy));
+
+// LaBr3 absorption lengths taken from vanDam2012, 
+// used here for CeBr3 as per Gostojic2016
+  G4double absorption[] = {
+							1.550*mm,1.525*mm,1.500*mm,1.475*mm,1.450*mm,
+							1.425*mm,1.400*mm,1.375*mm,1.3625*mm,1.350*mm,
+							1.3375*mm,1.325*mm,1.3125*mm,1.300*mm,1.285*mm,
+							1.275*mm,1.250*mm,1.225*mm,1.200*mm,1.175*mm,
+							1.150*mm,1.135*mm,1.125*mm,1.120*mm,1.115*mm,
+							1.110*mm,1.100*mm,1.085*mm,1.075*mm,1.050*mm,
+							1.025*mm,1.000*mm };
+	assert(sizeof(absorption) == sizeof(photonEnergy));
+
+// CeBr3 Scintillation
+// Estimated from Quarati2013, assume fast component only
+  G4double scintilFast[] = {
+						0.0000,0.0001,0.0005,0.0010,0.0015,
+						0.0020,0.0030,0.0050,0.0065,0.0080,
+						0.0100,0.0120,0.0138,0.0160,0.0190,
+						0.0200,0.0210,0.0220,0.0240,0.0230,
+						0.0200,0.0210,0.0220,0.0240,0.0230,
+						0.0200,0.0170,0.0140,0.0120,0.010,
+						0.0080,0.0055 };
+
+  assert(sizeof(scintilFast) == sizeof(photonEnergy));
+  
+/*  G4double scintilSlow[] =
+            {  	0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+             	0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+              	0.00, 0.00, 0.00, 0.00 ,0.00, 0.001,
+              0.005, 0.014, 0.015, 0.015, 
+              0.015, 0.015, 0.014, 0.050, 
+              0.001, 0.000, 0.000, 0.000 };
+         
+  assert(sizeof(scintilSlow) == sizeof(photonEnergy));
+*/
+
+//Create a materials table for crystal properties
+  G4MaterialPropertiesTable* CeBr3MPT = new G4MaterialPropertiesTable();
+
+  CeBr3MPT->AddProperty("RINDEX",photonEnergy,refractiveIndexCeBr3,nEntries)
+        ->SetSpline(true);
+  CeBr3MPT->AddProperty("RAYLEIGH",photonEnergy,absorption,nEntries)
+        ->SetSpline(true);
+//   CeBr3MPT->AddProperty("ABSLENGTH",photonEnergy,absorption,nEntries)
+//         ->SetSpline(true);
+  CeBr3MPT->AddProperty("FASTCOMPONENT",photonEnergy,scintilFast,nEntries)
+        ->SetSpline(true);
+//  CeBr3MPT->AddProperty("SLOWCOMPONENT",photonEnergy,scintilSlow,nEntries)
+//        ->SetSpline(true); 
+  CeBr3MPT->AddConstProperty("SCINTILLATIONYIELD",45000./MeV); // taken from Gostojic2016 and Quarati2013
+//  CeBr3MPT->AddConstProperty("SCINTILLATIONYIELD",500./MeV);
+  CeBr3MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // A fudge factor to match experimental resolutions.
+  CeBr3MPT->AddConstProperty("FASTTIMECONSTANT", 25.*ns); // Using 25ns based on arguments in Quarati2013
+//  CeBr3MPT->AddConstProperty("SLOWTIMECONSTANT",245.*ns); // Don't think this matters
+//  CeBr3MPT->AddConstProperty("YIELDRATIO",1); // Fast component only
+// Don't think we need to specify slow component
+
+  G4cout << "crystal G4MaterialPropertiesTable" << G4endl;
+  CeBr3MPT->DumpTable();
+
+  CeBr3->SetMaterialPropertiesTable(CeBr3MPT);
+
+  // Set the Birks Constant for the scintillator
+	// Have varied over 4 orders of magnitude with no noticeable effect.
+   CeBr3->GetIonisation()->SetBirksConstant(0.0163*mm/MeV); // what to use here?
+
+//
+//  ADD Optical properties to materials 
+//
+
+// Air
+// Define Optical Properties of Air  
+  G4double short_energy[]={2.000*eV,3.000*eV,4.200*eV};
+  const G4int short_num = sizeof(short_energy)/sizeof(G4double);
+
+// Set Refractive Index of Air 
+  G4double air_RIND[]={1.00,1.00,1.00};
+  assert(sizeof(air_RIND) == sizeof(short_energy));
+    
+  G4MaterialPropertiesTable* airMPT = new G4MaterialPropertiesTable();
+  airMPT->AddProperty("RINDEX", short_energy, air_RIND ,short_num);
+
+  G4cout << "Air G4MaterialPropertiesTable" << G4endl;
+  airMPT->DumpTable();
+
+  air->SetMaterialPropertiesTable(airMPT);
+
+// Quartz Glass
+// Set Refractive Index of Glass
+  G4double Glass_RIND[]={1.4585,1.4585,1.4585}; // taken from Gostojic2016
+// consistent with quartz glass (Quarati2013 states quartz windows used with Scionix)
+  assert(sizeof(Glass_RIND) == sizeof(short_energy));
+
+  G4MaterialPropertiesTable* GlassMPT = new G4MaterialPropertiesTable();
+  GlassMPT->AddProperty("RINDEX", short_energy, Glass_RIND ,short_num);
+
+  G4cout << "Glass G4MaterialPropertiesTable" << G4endl;
+  GlassMPT->DumpTable();
+
+  glass->SetMaterialPropertiesTable(GlassMPT);
+
+// Epoxy
+	G4double epoxy_RIND[]={1.590,1.590,1.590};
+	assert(sizeof(epoxy_RIND) == sizeof(short_energy));
+	
+	G4MaterialPropertiesTable* epoxyMPT = new G4MaterialPropertiesTable();
+	epoxyMPT->AddProperty("RINDEX",short_energy,epoxy_RIND,short_num);
+	
+	G4cout << "Epoxy G4MaterialProprtiesTable" << G4endl;
+	epoxyMPT->DumpTable();
+	
+	epoxy->SetMaterialPropertiesTable(epoxyMPT);
+
+// Al
+// Set Refractive Index of Al
+  G4double Al_RIND[]={1.1978,1.1978,1.1978};
+  assert(sizeof(Al_RIND) == sizeof(short_energy));
+
+  G4MaterialPropertiesTable* AlMPT = new G4MaterialPropertiesTable();
+  AlMPT->AddProperty("RINDEX", short_energy, Al_RIND ,short_num);
+
+  G4cout << "Al G4MaterialPropertiesTable" << G4endl;
+  AlMPT->DumpTable();
+
+  Al->SetMaterialPropertiesTable(AlMPT);
+
+//  PTFE 
+// Set Refractive Index of PTFE
+  G4double PTFE_RIND[]={1.365,1.365,1.365}; // as used in Dietz-Laursonn
+  assert(sizeof(PTFE_RIND) == sizeof(short_energy));
+
+  G4MaterialPropertiesTable* PTFE_MPT = new G4MaterialPropertiesTable();
+  PTFE_MPT->AddProperty("RINDEX", short_energy, PTFE_RIND ,short_num);
+
+  G4cout << "PTFE G4MaterialPropertiesTable" << G4endl;
+  PTFE_MPT->DumpTable();
+
+  PTFE->SetMaterialPropertiesTable(PTFE_MPT);
+
+//***********************************
+// ------------- Volumes --------------
+//***********************************
+
+// The experimental Hall
+//
+  G4Box* expHall_box = new G4Box("World",0.5*fExpHall_x,0.5*fExpHall_y,0.5*fExpHall_z);
+  G4LogicalVolume* expHall_log
+    = new G4LogicalVolume(expHall_box,air,"World",0,0,0);
+  G4VPhysicalVolume* expHall_phys
+    = new G4PVPlacement(0,G4ThreeVector(),expHall_log,"World",0,false,0);
+
+////////////////
+// Encapsulation
+
+  G4double Al_thickness=0.5*mm;
+  G4double PTFE_thickness=3.0*mm;
+  G4double window_z = 2*mm;
+  G4double window_xy = 30*mm;
+
+  G4double can_xy = 32*mm;
+  G4double can_z = fCrystal_z + PTFE_thickness + Al_thickness + window_z;
+
+  G4double PTFE_xy = can_xy - Al_thickness*2;
+  G4double PTFE_z = fCrystal_z + PTFE_thickness + window_z;
+
+  G4double PTFE_offset = Al_thickness*0.5;
+  G4double crystal_offset = 0.5*PTFE_z - window_z - 0.5*fCrystal_z;
+  G4double window_offset = 0.5*PTFE_z - 0.5*window_z;
+
+	G4double SiPMOffset = (fSiPM_z+can_z)*0.5;
+
+// Al Can
+  G4Box* can_box = new G4Box("Al Can",can_xy*0.5,can_xy*0.5,can_z*0.5);
+  G4LogicalVolume* can_log 
+    = new G4LogicalVolume(can_box,Al,"can_log",0,0,0);
+  G4VPhysicalVolume* can_phys =
+    	new G4PVPlacement(0,G4ThreeVector(),can_log,"Al Can",
+						expHall_log,false,0,checkOverlaps);
+
+// PTFE wrapping
+  G4Box* PTFE_box = new G4Box("PTFE",PTFE_xy*0.5,PTFE_xy*0.5,PTFE_z*0.5);
+  G4LogicalVolume* PTFE_log 
+		= new G4LogicalVolume(PTFE_box,PTFE,"PTFE_log",0,0,0);
+  G4VPhysicalVolume* PTFE_phys =
+			new G4PVPlacement(0,G4ThreeVector(0,0,PTFE_offset),PTFE_log,"PTFE",
+						can_log,false,0,checkOverlaps);
+
+// Window
+  G4Box* window_box = new G4Box("window",window_xy*0.5,window_xy*0.5,window_z*0.5);
+  G4LogicalVolume* window_log
+	= new G4LogicalVolume(window_box,glass,"window_log",0,0,0);
+  G4VPhysicalVolume* window_phys =
+			new G4PVPlacement(0,G4ThreeVector(0,0,window_offset),window_log,"window",
+						PTFE_log,false,0,checkOverlaps);
+
+	G4VisAttributes * Alats = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0) );
+	can_log->SetVisAttributes(Alats);
+	G4VisAttributes * PTFEats = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0) );
+	PTFE_log->SetVisAttributes(PTFEats);
+	G4VisAttributes * windowats = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0) );
+	window_log->SetVisAttributes(windowats);
+////////////////
+
+// The crystal volume
+  G4Box* crystal_box = new G4Box("crystal",0.5*fCrystal_x,0.5*fCrystal_y,0.5*fCrystal_z);
+  G4LogicalVolume* crystal_log
+    = new G4LogicalVolume(crystal_box,CeBr3,"crystal_log",0,0,0);
+  G4VPhysicalVolume* crystal_phys
+    = new G4PVPlacement(0,G4ThreeVector(0,0,crystal_offset),crystal_log,"crystal",
+                        PTFE_log,false,0,checkOverlaps);
+
+	G4VisAttributes * crystal_ats = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0) );
+	crystal_log->SetVisAttributes(crystal_ats);
+
+// Epoxy Cover to photosensor
+	G4Box* SiPM_box = new G4Box("Epoxy_box",fSiPM_x*0.5,fSiPM_y*0.5,fSiPM_z*0.5);
+	G4LogicalVolume* SiPM_log = new G4LogicalVolume(SiPM_box, epoxy , "SiPM_log", 0,0,0);
+	G4VPhysicalVolume* SiPM_phys = new G4PVPlacement(0,	// no rotation
+											G4ThreeVector(0,0,SiPMOffset),	// position
+											SiPM_log,                //its logical volume
+											"Epoxy",              //its name
+											expHall_log,              //its mother  volume
+											false,                   //no boolean operation
+											0,                       //copy number
+											checkOverlaps);          //overlaps checking
+
+G4VisAttributes * sipm_ats = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0) );
+SiPM_log->SetVisAttributes(sipm_ats);
+
+//**************************************
+// ------------- Surfaces --------------
+//**************************************
+
+///////////////////////
+// Crystal to PTFE
+
+  G4OpticalSurface* crystalPTFESurface = new G4OpticalSurface("crystalSurface");
+  crystalPTFESurface->SetType(dielectric_metal); // use this to ensure get 97% of light reflected from PTFE
+  crystalPTFESurface->SetFinish(ground); // as used in Gostojic2016
+  crystalPTFESurface->SetModel(glisur);
+  crystalPTFESurface->SetPolish(0.75); // 1 is a polished surface, 0 is maximum roughness
+
+  new G4LogicalBorderSurface("crystalSurface",crystal_phys,PTFE_phys,crystalPTFESurface);
+
+  G4double PTFE_reflect[]={0.97,0.97,0.97}; // as used in Gostojic2016
+//   G4double PTFE_reflect[]={0.99,0.99,0.99}; // as used in Dietz-Laursonn
+  assert(sizeof(PTFE_reflect) == sizeof(short_energy));
+
+  G4MaterialPropertiesTable* crystalPTFE_SMPT = new G4MaterialPropertiesTable();
+  crystalPTFE_SMPT->AddProperty("REFLECTIVITY",short_energy,PTFE_reflect,short_num);
+// use refractive index of simulate a thin layer of air between crystal and wrapping
+// This only has an effect if using "backpainted" surfaces!
+//   crystalPTFE_SMPT->AddProperty("RINDEX",short_energy,air_RIND,short_num);
+
+  crystalPTFESurface->SetMaterialPropertiesTable(crystalPTFE_SMPT);
+
+//  G4cout << "Crystal_PTFE Surface Material Properties Table" << G4endl;
+//  crystalPTFE_SMPT->DumpTable();
+
+///////////////////////
+// Crystal to Window 
+
+  G4OpticalSurface* crystalWindowSurface = new G4OpticalSurface("crystalWindowSurface");
+  crystalWindowSurface->SetType(dielectric_dielectric);
+  crystalWindowSurface->SetFinish(ground); // as used by Gostojic2016
+  crystalWindowSurface->SetModel(glisur);
+  crystalWindowSurface->SetPolish(0.75);
+
+  new G4LogicalBorderSurface("crystalWindowSurface",
+                                 crystal_phys,window_phys,crystalWindowSurface);
+
+  G4double window_reflect[]={1.0,1.0,1.0}; // as used by Gostojic2016
+  assert(sizeof(window_reflect) == sizeof(short_energy));
+  
+  G4MaterialPropertiesTable* crystalWindow_SMPT = new G4MaterialPropertiesTable();
+	crystalWindow_SMPT->AddProperty("REFLECTIVITY",short_energy,window_reflect,short_num);
+  crystalWindowSurface->SetMaterialPropertiesTable(crystalWindow_SMPT);
+
+//  G4cout << "crystalWindowSurface G4MaterialPropertiesTable" << G4endl;
+//  crystalWindowSurface->DumpInfo();
+
+// not using a refractive index here (as in Gostojic2016), presumably because coupling 
+// adhesive is match to window index so that will be used by default by Geant
+//	crystalWindow_SMPT->AddProperty("RINDEX", crystal_Energy, YG_Rindex, YG_num);
+
+////////////////////////
+// Window to SiPM
+
+	G4OpticalSurface* windowSiPMSurface = new G4OpticalSurface("windowSiPMSurface");
+	windowSiPMSurface->SetType(dielectric_dielectric);
+	windowSiPMSurface->SetFinish(polished);
+	windowSiPMSurface->SetModel(glisur);
+	
+	new G4LogicalBorderSurface("windowSiPMSurface",
+																window_phys,SiPM_phys,windowSiPMSurface);
+																
+//	G4double SiPM_reflect[]={0.97,0.97,0.97}; // as used by Gostojic2016
+	G4double SiPM_reflect[]={0.0,0.0,0.0};
+	assert(sizeof(SiPM_reflect) == sizeof(short_energy));
+	
+// use refractive index of optical grease
+//	G4double grease_RIND[]={1.465,1.465,1.465};
+//	assert(sizeof(grease_RIND) == sizeof(short_energy));
+	
+	G4double SiPM_Energy[]={2.0*eV,2.18*eV,2.38*eV,2.64*eV,2.95*eV,3.35*eV,3.88*eV,4.*eV,4.13*eV,4.27*eV };
+	const G4int SiPM_num=sizeof(SiPM_Energy)/sizeof(G4double);
+	G4double SiPM_PDE[] = {0.15,0.18,0.25,0.375,0.43,0.33,0.08,0.05,0.05,0.05};
+//	G4double SiPM_PDE[] = {1,1,1,1,1,1,1,1,1,1};
+	assert(sizeof(SiPM_PDE) == sizeof(SiPM_Energy));
+	
+	G4MaterialPropertiesTable* windowSiPM_SMPT = new G4MaterialPropertiesTable();
+	windowSiPM_SMPT->AddProperty("REFLECTIVITY",short_energy,SiPM_reflect,short_num);
+//	windowSiPM_SMPT->AddProperty("RINDEX",short_energy,grease_RIND,short_num);
+	windowSiPM_SMPT->AddProperty("EFFICIENCY",SiPM_Energy,SiPM_PDE,SiPM_num);
+	windowSiPMSurface->SetMaterialPropertiesTable(windowSiPM_SMPT);
+
+//  G4cout << "windowSiPMSurface G4MaterialPropertiesTable" << G4endl;
+//  windowSiPMSurface->DumpInfo();
+
+////////////////////////
+// Window to PTFE
+
+	G4OpticalSurface* windowPTFESurface = new G4OpticalSurface("windowPTFESurface");
+	windowPTFESurface->SetType(dielectric_metal);
+	windowPTFESurface->SetFinish(ground);
+	windowPTFESurface->SetModel(glisur);
+	windowPTFESurface->SetPolish(0.75);
+	
+	new G4LogicalBorderSurface("windowPTFESurface",
+																window_phys,PTFE_phys,windowPTFESurface);
+
+  G4double PTFE_reflect2[]={0.,0.,0.}; // as used in Gostojic2016
+
+  G4MaterialPropertiesTable* windowPTFE_SMPT = new G4MaterialPropertiesTable();
+  windowPTFE_SMPT->AddProperty("REFLECTIVITY",short_energy,PTFE_reflect2,short_num);
+	windowPTFESurface->SetMaterialPropertiesTable(windowPTFE_SMPT);
+
+////////////////////////
+// Window to Al
+
+	G4OpticalSurface* windowAlSurface = new G4OpticalSurface("windowAlSurface");
+	windowAlSurface->SetType(dielectric_metal);
+	windowAlSurface->SetFinish(ground);
+	windowAlSurface->SetModel(glisur);
+	windowAlSurface->SetPolish(0.75);
+	
+	new G4LogicalBorderSurface("windowAlSurface",
+																window_phys,can_phys,windowAlSurface);
+																
+	G4double Al_reflect[] = {0.92,0.92,0.92};
+	assert(sizeof(Al_reflect) == sizeof(short_energy));
+
+  G4MaterialPropertiesTable* windowAl_SMPT = new G4MaterialPropertiesTable();
+  windowAl_SMPT->AddProperty("REFLECTIVITY",short_energy,Al_reflect,short_num);
+	windowAlSurface->SetMaterialPropertiesTable(windowAl_SMPT);
+////////////////////////
+
+//always return the physical World
+  return expHall_phys;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+void OpModelDetectorConstruction::ConstructSDandField(){
+
+//**********  Define Sensitive Detector **************
+//Create Instance for SiPM array
+	G4String SDname = "/myDet/SiPM1";  
+	sipmSD* SiPM_SD = new sipmSD(SDname,"photonHitsCollection"); 
+//Register to SD Manager
+	SetSensitiveDetector("SiPM_log",SiPM_SD,true);
+
+//Create Instance for crystal
+ 	SDname = "/myDet/crystal";
+ 	crystalSD* crystal_SD = new crystalSD(SDname,"gammaHitsCollection"); 
+	SetSensitiveDetector("crystal_log",crystal_SD,true);
+
+}

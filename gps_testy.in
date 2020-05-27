@@ -1,0 +1,26 @@
+# Not sure exactly what all of these do but
+# /process/setVerbose 0 is need to prevent 
+# writting out all boundary interaction
+
+#/control/verbose 1
+#/tracking/verbose 0
+#/process/verbose 1
+#/run/verbose 1
+#/event/verbose 0
+#/cuts/verbose 1
+/analysis/verbose 1
+#/hits/verbose 1
+/process/setVerbose 0
+
+/gps/particle gamma
+# /gps/pos/type Plane
+/gps/pos/type Beam
+/gps/pos/shape Circle
+/gps/pos/centre -0.5 0.5 -40 mm
+#/gps/pos/centre -11.5 11.5 -40 mm
+/gps/pos/radius 0.7 mm
+/gps/pos/sigma_r 0.681 mm
+/gps/direction 0 0 1
+/gps/ene/mono 356 keV
+
+/run/beamOn 100
