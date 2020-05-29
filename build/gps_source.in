@@ -16,7 +16,8 @@
 # /gps/pos/type Plane
 /gps/pos/type Beam
 /gps/pos/shape Circle
-/gps/pos/centre -0.5 0.5 -40 mm
+/gps/pos/centre 0. 0. -40 mm
+#/gps/pos/centre -0.5 0.5 -40 mm
 #/gps/pos/centre -11.5 11.5 -40 mm
 #/gps/pos/radius 0.7 mm
 /gps/pos/radius 37 mm
@@ -25,4 +26,4 @@
 #/gps/ene/mono 356 keV
 /gps/ene/mono  662 keV
 
-/run/beamOn 10
+/run/beamOn 1000

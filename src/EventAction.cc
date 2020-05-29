@@ -83,7 +83,10 @@ void EventAction::EndOfEventAction(const G4Event* event){
 	analysisManager->FillNtupleDColumn(7,gammaEnergy);
 	analysisManager->FillNtupleIColumn(8,nGammaHits);
 	
-	analysisManager->AddNtupleRow();
+	if(nGammaHits==0 && numberHits==0) G4cout << "No gamma or photon hits" << G4endl;
+	else if(nGammaHits==0) G4cout << "No gamma hits" << G4endl;
+	else if(numberHits==0) G4cout << "No photon hits" << G4endl;
+	else analysisManager->AddNtupleRow();
 
 	fXpos.clear();
 	fYpos.clear();
