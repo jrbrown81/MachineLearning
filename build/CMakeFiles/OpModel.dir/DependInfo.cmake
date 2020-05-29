@@ -41,7 +41,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/opt/york/phys/pkg/Modules/geant/4.10.3.p02/1/default/include/Geant4"
+  "/opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4"
   "/usr/include/qt4"
   "/usr/include/qt4/QtCore"
   "/usr/include/qt4/QtGui"

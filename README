@@ -1,0 +1,9 @@
+Currently Loaded Modulefiles:
+  1) null               3) its-hdd            5) gcc/5.4.0          7) geant/4.10.1.p03
+  2) its-net            4) Ubuntu/16.04       6) ROOT/6.16.00
+
+To Compile:
+- in build directory:
+   cmake ../    (may need to remove CMakeCache.txt first)
+   ./fix.sh     (to fix Qunused... problem)
+   make -j

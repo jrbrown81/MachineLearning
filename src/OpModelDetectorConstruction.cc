@@ -40,7 +40,8 @@ OpModelDetectorConstruction::OpModelDetectorConstruction()
   fExpHall_x = fExpHall_y = fExpHall_z = 100.0*mm;
 	
   fCrystal_x = fCrystal_y  =  50.4*mm;
-  fCrystal_z = 50.4*mm;
+//  fCrystal_z = 50.4*mm;
+	fCrystal_z = 12.6*mm;
 
 //  fSiPM_x = fSiPM_y = 6*mm;
   fSiPM_x = fSiPM_y = 50.4*mm;
@@ -289,20 +290,20 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 		= new G4PVPlacement(0,G4ThreeVector(0,0,0.5*(fEpoxy_z-fSiPM_z)),SiPM_log,
 		"sipm0",epoxy_log,false,0,checkOverlaps);
 // SiPM 1 - xy plane front
-	G4VPhysicalVolume* epoxy_phys_1 =
-	new G4PVPlacement(rotX180,G4ThreeVector(0,0,-SiPMOffset),epoxy_log,"epoxy1",PTFE_log,false,1,checkOverlaps);
-// SiPM 2 - xz plane, positive side
-	G4VPhysicalVolume* epoxy_phys_2 =
-	new G4PVPlacement(rotX90,G4ThreeVector(0,SiPMOffset,0),epoxy_log,"epoxy2",PTFE_log,false,2,checkOverlaps);
-// SiPM 3 - xz plane, negative side
-	G4VPhysicalVolume* epoxy_phys_3 =
-	new G4PVPlacement(rotX270,G4ThreeVector(0,-SiPMOffset,0),epoxy_log,"epoxy3",PTFE_log,false,3,checkOverlaps);
-// SiPM 4 - yz plane, positive side
-	G4VPhysicalVolume* epoxy_phys_4 =
-	new G4PVPlacement(rotY270,G4ThreeVector(SiPMOffset,0,0),epoxy_log,"epoxy4",PTFE_log,false,4,checkOverlaps);
-// SiPM 5 - yz plane, negative side
-	G4VPhysicalVolume* epoxy_phys_5 =
-	new G4PVPlacement(rotY90,G4ThreeVector(-SiPMOffset,0,0),epoxy_log,"epoxy5",PTFE_log,false,5,checkOverlaps);
+//	G4VPhysicalVolume* epoxy_phys_1 =
+//	new G4PVPlacement(rotX180,G4ThreeVector(0,0,-SiPMOffset),epoxy_log,"epoxy1",PTFE_log,false,1,checkOverlaps);
+//// SiPM 2 - xz plane, positive side
+//	G4VPhysicalVolume* epoxy_phys_2 =
+//	new G4PVPlacement(rotX90,G4ThreeVector(0,SiPMOffset,0),epoxy_log,"epoxy2",PTFE_log,false,2,checkOverlaps);
+//// SiPM 3 - xz plane, negative side
+//	G4VPhysicalVolume* epoxy_phys_3 =
+//	new G4PVPlacement(rotX270,G4ThreeVector(0,-SiPMOffset,0),epoxy_log,"epoxy3",PTFE_log,false,3,checkOverlaps);
+//// SiPM 4 - yz plane, positive side
+//	G4VPhysicalVolume* epoxy_phys_4 =
+//	new G4PVPlacement(rotY270,G4ThreeVector(SiPMOffset,0,0),epoxy_log,"epoxy4",PTFE_log,false,4,checkOverlaps);
+//// SiPM 5 - yz plane, negative side
+//	G4VPhysicalVolume* epoxy_phys_5 =
+//	new G4PVPlacement(rotY90,G4ThreeVector(-SiPMOffset,0,0),epoxy_log,"epoxy5",PTFE_log,false,5,checkOverlaps);
 	
 	G4VisAttributes * epoxy_ats = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0) );
 	epoxy_log->SetVisAttributes(epoxy_ats);
@@ -414,11 +415,11 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 	epoxySiSurface->SetMaterialPropertiesTable(epoxySi_SMPT);
 
 	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_0,Si_phys,epoxySiSurface);
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_1,Si_phys,epoxySiSurface);
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_2,Si_phys,epoxySiSurface);
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_3,Si_phys,epoxySiSurface);
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_4,Si_phys,epoxySiSurface);
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_5,Si_phys,epoxySiSurface);
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_1,Si_phys,epoxySiSurface);
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_2,Si_phys,epoxySiSurface);
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_3,Si_phys,epoxySiSurface);
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_4,Si_phys,epoxySiSurface);
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_5,Si_phys,epoxySiSurface);
 
 // Epoxy to PTFE
   G4OpticalSurface* epoxyPTFESurface = new G4OpticalSurface("epoxyPTFESurface");
@@ -439,11 +440,11 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
   epoxyPTFESurface->SetMaterialPropertiesTable(epoxyPTFE_SMPT);
 
   new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_0,PTFE_phys,epoxyPTFESurface);
-  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_1,PTFE_phys,epoxyPTFESurface);
-  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_2,PTFE_phys,epoxyPTFESurface);
-  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_3,PTFE_phys,epoxyPTFESurface);
-  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_4,PTFE_phys,epoxyPTFESurface);
-  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_5,PTFE_phys,epoxyPTFESurface);
+//  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_1,PTFE_phys,epoxyPTFESurface);
+//  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_2,PTFE_phys,epoxyPTFESurface);
+//  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_3,PTFE_phys,epoxyPTFESurface);
+//  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_4,PTFE_phys,epoxyPTFESurface);
+//  new G4LogicalBorderSurface("epoxyPTFESurface",epoxy_phys_5,PTFE_phys,epoxyPTFESurface);
 
 //  G4cout << "crystalSiPMSurface G4MaterialPropertiesTable" << G4endl;
 //  crystalSiPMSurface->DumpInfo();

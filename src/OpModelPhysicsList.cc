@@ -117,7 +117,7 @@ void OpModelPhysicsList::ConstructDecay()
 {
   // Add Decay Process
   G4Decay* theDecayProcess = new G4Decay();
-  auto theParticleIterator = GetParticleIterator();
+//  //auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
@@ -155,7 +155,7 @@ void OpModelPhysicsList::ConstructDecay()
 
 void OpModelPhysicsList::ConstructEM()
 {
-  auto theParticleIterator = GetParticleIterator();
+  //auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
@@ -228,7 +228,7 @@ void OpModelPhysicsList::ConstructOp()
       scintillationProcess->AddSaturation(emSaturation);
   }
 
-  auto theParticleIterator = GetParticleIterator();
+  //auto theParticleIterator = GetParticleIterator();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
     G4ParticleDefinition* particle = theParticleIterator->value();
