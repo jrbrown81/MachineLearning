@@ -31,6 +31,7 @@
 #include "G4UnitsTable.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4RotationMatrix.hh"
+#include "G4PVReplica.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -39,15 +40,18 @@ OpModelDetectorConstruction::OpModelDetectorConstruction()
 {
   fExpHall_x = fExpHall_y = fExpHall_z = 100.0*mm;
 	
-  fCrystal_x = fCrystal_y  =  50.4*mm;
+  fCrystal_x = fCrystal_y  =  50.44*mm;
 //  fCrystal_z = 50.4*mm;
 	fCrystal_z = 12.6*mm;
 
-//  fSiPM_x = fSiPM_y = 6*mm;
-  fSiPM_x = fSiPM_y = 50.4*mm;
+  fSiPM_x = fSiPM_y = 6.13*mm;
+//  fSiPM_x = fSiPM_y = 50.4*mm;
 //  fSiPM_z = 0.21*mm;
   fSiPM_z = 0.07*mm;
+  fSiPM_gap = 0.2*mm;
+//  G4double sipm_pitch = fSiPM_x + fSiPM_gap;
 
+ fEpoxy_x = fEpoxy_y = fCrystal_x;
  fEpoxy_z = 0.35*mm;
 
 }
@@ -277,7 +281,8 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 	G4RotationMatrix* rotY270 = new G4RotationMatrix();
 	rotY270->rotateY(270.*deg);
 	
-	G4Box* epoxy_box = new G4Box("Epoxy_box",fSiPM_x*0.5,fSiPM_y*0.5,fEpoxy_z*0.5);
+//	G4Box* epoxy_box = new G4Box("Epoxy_box",fSiPM_x*0.5,fSiPM_y*0.5,fEpoxy_z*0.5);
+	G4Box* epoxy_box = new G4Box("Epoxy_box",fEpoxy_x*0.5,fEpoxy_y*0.5,fEpoxy_z*0.5);
 	G4LogicalVolume* epoxy_log = new G4LogicalVolume(epoxy_box, epoxy , "epoxy_log", 0,0,0);
 	G4Box* sipm_box = new G4Box("sipm_box",fSiPM_x*0.5,fSiPM_y*0.5,fSiPM_z*0.5);
 	G4LogicalVolume* SiPM_log = new G4LogicalVolume(sipm_box, Si , "SiPM_log", 0,0,0);
@@ -285,10 +290,20 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 // SiPM 0 - xy plane back
 	G4VPhysicalVolume* epoxy_phys_0 = new G4PVPlacement(0,G4ThreeVector(0,0,SiPMOffset),epoxy_log,
 											"epoxy0",PTFE_log,false,0,checkOverlaps);
+									
+// SiPM array using for loop
+	G4VPhysicalVolume* Si_phys[8][8];
+	G4int counter=0;
+	for(G4int i=0;i<8;i++) {
+		for(G4int j=0;j<8;j++) {
+			 Si_phys[j][i] = new G4PVPlacement(0, G4ThreeVector((j-3.5)*(fSiPM_x+fSiPM_gap),(i-3.5)*(fSiPM_y+fSiPM_gap),0.5*(fEpoxy_z-fSiPM_z)), SiPM_log, "sipm0", epoxy_log, false, counter, checkOverlaps);
+			counter++;
+		}
+	}
 // Share Si physical volume used by all SiPMs
-	G4VPhysicalVolume* Si_phys
-		= new G4PVPlacement(0,G4ThreeVector(0,0,0.5*(fEpoxy_z-fSiPM_z)),SiPM_log,
-		"sipm0",epoxy_log,false,0,checkOverlaps);
+//	G4VPhysicalVolume* Si_phys
+//		= new G4PVPlacement(0,G4ThreeVector(0,0,0.5*(fEpoxy_z-fSiPM_z)),SiPM_log,
+//		"sipm0",epoxy_log,false,0,checkOverlaps);
 // SiPM 1 - xy plane front
 //	G4VPhysicalVolume* epoxy_phys_1 =
 //	new G4PVPlacement(rotX180,G4ThreeVector(0,0,-SiPMOffset),epoxy_log,"epoxy1",PTFE_log,false,1,checkOverlaps);
@@ -414,7 +429,10 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 	epoxySi_SMPT->AddProperty("EFFICIENCY",SiPM_Energy,SiPM_PDE,SiPM_num);
 	epoxySiSurface->SetMaterialPropertiesTable(epoxySi_SMPT);
 
-	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_0,Si_phys,epoxySiSurface);
+// If SiPM array using for loop
+	for(G4int i=0;i<8;i++) for(G4int j=0;j<8;j++) new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_0,Si_phys[j][i],epoxySiSurface);
+// If multiple single large SiPMs on faces
+//	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_0,Si_phys,epoxySiSurface);
 //	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_1,Si_phys,epoxySiSurface);
 //	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_2,Si_phys,epoxySiSurface);
 //	new G4LogicalBorderSurface("epoxySiSurface",epoxy_phys_3,Si_phys,epoxySiSurface);

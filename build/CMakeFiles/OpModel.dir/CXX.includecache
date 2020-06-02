@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -209,6 +209,8 @@ G4SubtractionSolid.hh
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/G4SubtractionSolid.hh
 G4RotationMatrix.hh
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/G4RotationMatrix.hh
+G4PVReplica.hh
+/home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/G4PVReplica.hh
 
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/OpModelPhysicsList.cc
 globals.hh
@@ -343,6 +345,8 @@ EventAction.hh
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/EventAction.hh
 G4RunManager.hh
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/G4RunManager.hh
+sstream
+-
 
 /home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/src/OpModelStackingAction.cc
 OpModelStackingAction.hh
@@ -2853,6 +2857,12 @@ G4VPhysicalVolume.hh
 /opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4VPhysicalVolume.hh
 G4Transform3D.hh
 /opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4Transform3D.hh
+
+/opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4PVReplica.hh
+G4VPhysicalVolume.hh
+/opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4VPhysicalVolume.hh
+G4GeomSplitter.hh
+/opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4GeomSplitter.hh
 
 /opt/york/phys/pkg/Modules/geant/4.10.1.p03/2/default/include/Geant4/G4ParameterisedNavigation.hh
 G4Types.hh

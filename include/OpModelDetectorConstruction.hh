@@ -58,9 +58,12 @@ class OpModelDetectorConstruction : public G4VUserDetectorConstruction
     G4double fSiPM_x;
     G4double fSiPM_y;
     G4double fSiPM_z;
+    G4double fSiPM_gap;
 	
-    G4double fEpoxy_z;
-
+    G4double fEpoxy_x;
+		G4double fEpoxy_y;
+		G4double fEpoxy_z;
+    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

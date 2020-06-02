@@ -55,7 +55,8 @@ G4String ParticleName = track->GetDynamicParticle()->
 //Get the postpoint position
   G4StepPoint* thePostPoint = aStep->GetPostStepPoint();
 //	G4TouchableHandle theTouchable = thePostPoint->GetTouchableHandle();
-	G4int copyNo = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+//	G4int copyNo = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+	G4int copyNo = aStep->GetPostStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	G4double edep = aStep->GetTotalEnergyDeposit();
   G4ThreeVector PostPointPos = thePostPoint->GetPosition();
  

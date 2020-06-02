@@ -39,6 +39,8 @@
 #include "EventAction.hh"
 #include "G4RunManager.hh"
 
+#include <sstream>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 OpModelRunAction::OpModelRunAction()
@@ -101,12 +103,21 @@ void OpModelRunAction::BeginOfRunAction(const G4Run* aRun)
   analysisManager->CreateNtupleDColumn("zGam",eventAction->GetVecZGamma());	// Column ID 12
 
 // Hits per SiPM
-  analysisManager->CreateNtupleIColumn("hits0"); // Column 13
-  analysisManager->CreateNtupleIColumn("hits1"); // Colunm 14
-  analysisManager->CreateNtupleIColumn("hits2"); // Column 15
-  analysisManager->CreateNtupleIColumn("hits3"); // Colunm 16
-  analysisManager->CreateNtupleIColumn("hits4"); // Column 17
-  analysisManager->CreateNtupleIColumn("hits5"); // Colunm 18
+//  analysisManager->CreateNtupleIColumn("hits0"); // Column 13
+//  analysisManager->CreateNtupleIColumn("hits1"); // Colunm 14
+//  analysisManager->CreateNtupleIColumn("hits2"); // Column 15
+//  analysisManager->CreateNtupleIColumn("hits3"); // Colunm 16
+//  analysisManager->CreateNtupleIColumn("hits4"); // Column 17
+//  analysisManager->CreateNtupleIColumn("hits5"); // Colunm 18
+// Hits per SiPM if using array of 64 pixels
+	G4String detectorString;
+	std::stringstream ss;
+  for(G4int i=0;i<64;i++) {
+		ss.str("");
+		ss << "sipm" << i;
+		detectorString = ss.str();
+		analysisManager->CreateNtupleIColumn(detectorString); // Colunm 13 to 77
+	}
 	
   analysisManager->FinishNtuple();
 

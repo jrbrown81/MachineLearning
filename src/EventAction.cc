@@ -40,7 +40,9 @@ void EventAction::EndOfEventAction(const G4Event* event){
 
 //Get the number of hits inside the 	
 	G4int numberHits = mycollection->entries();
-	G4int hits0=0, hits1=0, hits2=0, hits3=0, hits4=0, hits5=0;
+	G4int hits[64];
+	for(G4int i=0;i<64;i++) hits[i]=0;
+//	G4int hits0=0, hits1=0, hits2=0, hits3=0, hits4=0, hits5=0;
  	analysisManager->FillNtupleIColumn(0,numberHits);
  	
 // Loop over hits collection and fill vectors (which are linked to ntuple)
@@ -53,20 +55,25 @@ void EventAction::EndOfEventAction(const G4Event* event){
 		fTime.push_back(thisHit->GetHitTime());
 		fEnergy.push_back(thisHit->GetEnergyDeposit());
 		fDetID.push_back(thisHit->GetDetNo());
-	// Count hits in each sipm (if adding more sipm it should be here)
-		if(thisHit->GetDetNo()==0) hits0++;
-		if(thisHit->GetDetNo()==1) hits1++;
-		if(thisHit->GetDetNo()==2) hits2++;
-		if(thisHit->GetDetNo()==3) hits3++;
-		if(thisHit->GetDetNo()==4) hits4++;
-		if(thisHit->GetDetNo()==5) hits5++;
+// Using array of 64 pixels
+		hits[thisHit->GetDetNo()]++;
+// Count hits in each sipm (if adding more sipm it should be here)
+//		if(thisHit->GetDetNo()==0) hits0++;
+//		if(thisHit->GetDetNo()==1) hits1++;
+//		if(thisHit->GetDetNo()==2) hits2++;
+//		if(thisHit->GetDetNo()==3) hits3++;
+//		if(thisHit->GetDetNo()==4) hits4++;
+//		if(thisHit->GetDetNo()==5) hits5++;
 	}
-	analysisManager->FillNtupleIColumn(13,hits0);
- 	analysisManager->FillNtupleIColumn(14,hits1);
- 	analysisManager->FillNtupleIColumn(15,hits2);
- 	analysisManager->FillNtupleIColumn(16,hits3);
- 	analysisManager->FillNtupleIColumn(17,hits4);
- 	analysisManager->FillNtupleIColumn(18,hits5);
+	
+	for(G4int i=0;i<64;i++) analysisManager->FillNtupleIColumn(i+13,hits[i]);
+	
+//	analysisManager->FillNtupleIColumn(13,hits0);
+// 	analysisManager->FillNtupleIColumn(14,hits1);
+// 	analysisManager->FillNtupleIColumn(15,hits2);
+// 	analysisManager->FillNtupleIColumn(16,hits3);
+// 	analysisManager->FillNtupleIColumn(17,hits4);
+// 	analysisManager->FillNtupleIColumn(18,hits5);
 	
 	crystalHitsCollection* myXtalCollection = GetCrystalCollection(event,"gammaHitsCollection");
 	crystalHit* gammaHit = (*myXtalCollection)[0];
@@ -83,10 +90,10 @@ void EventAction::EndOfEventAction(const G4Event* event){
 	analysisManager->FillNtupleDColumn(7,gammaEnergy);
 	analysisManager->FillNtupleIColumn(8,nGammaHits);
 	
-	if(nGammaHits==0 && numberHits==0) G4cout << "No gamma or photon hits" << G4endl;
-	else if(nGammaHits==0) G4cout << "No gamma hits" << G4endl;
-	else if(numberHits==0) G4cout << "No photon hits" << G4endl;
-	else analysisManager->AddNtupleRow();
+//	if(nGammaHits==0 && numberHits==0) G4cout << "No gamma or photon hits" << G4endl;
+//	else if(nGammaHits==0) G4cout << "No gamma hits" << G4endl;
+//	else if(numberHits==0) G4cout << "No photon hits" << G4endl;
+	if(nGammaHits!=0 && numberHits!=0) analysisManager->AddNtupleRow();
 
 	fXpos.clear();
 	fYpos.clear();
