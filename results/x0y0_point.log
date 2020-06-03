@@ -1,0 +1,521 @@
+
+*************************************************************
+ Geant4 version Name: geant4-10-01-patch-03 [MT]   (5-February-2016)
+  << in Multi-threaded mode >> 
+                      Copyright : Geant4 Collaboration
+                      Reference : NIM A 506 (2003), 250-303
+                            WWW : http://cern.ch/geant4
+*************************************************************
+
+### NIST DataBase for Materials is used
+### NIST DataBase for Elements is used
+crystal G4MaterialPropertiesTable
+ABSLENGTH
+1.82e-06	4127
+1.85e-06	4261
+1.9e-06	4226
+1.93e-06	4338
+1.99e-06	4717
+2.06e-06	4522
+2.13e-06	4496
+2.21e-06	4462
+2.29e-06	4676
+2.38e-06	4476
+2.43e-06	4435
+2.47e-06	4621
+2.53e-06	4649
+2.58e-06	4688
+2.63e-06	4445
+2.75e-06	5169
+2.88e-06	5741
+3.09e-06	7517
+3.54e-06	1609
+FASTCOMPONENT
+1.82e-06	0.2
+1.85e-06	0.3
+1.9e-06	0.4
+1.93e-06	0.5
+1.99e-06	0.6
+2.06e-06	0.7
+2.13e-06	0.8
+2.21e-06	0.9
+2.29e-06	1
+2.38e-06	0.9
+2.43e-06	0.8
+2.47e-06	0.7
+2.53e-06	0.6
+2.58e-06	0.5
+2.63e-06	0.4
+2.75e-06	0.3
+2.88e-06	0.2
+3.09e-06	0.1
+3.54e-06	0
+RINDEX
+1.82e-06	1.79
+1.85e-06	1.79
+1.9e-06	1.79
+1.93e-06	1.79
+1.99e-06	1.79
+2.06e-06	1.79
+2.13e-06	1.79
+2.21e-06	1.79
+2.29e-06	1.79
+2.38e-06	1.79
+2.43e-06	1.79
+2.47e-06	1.79
+2.53e-06	1.79
+2.58e-06	1.79
+2.63e-06	1.79
+2.75e-06	1.79
+2.88e-06	1.79
+3.09e-06	1.79
+3.54e-06	1.79
+FASTTIMECONSTANT
+1000
+RESOLUTIONSCALE
+1
+SCINTILLATIONYIELD
+52000
+Air G4MaterialPropertiesTable
+RINDEX
+2e-06	1
+3e-06	1
+4.2e-06	1
+Epoxy G4MaterialProprtiesTable
+RINDEX
+2e-06	1.59
+3e-06	1.59
+4.2e-06	1.59
+PTFE G4MaterialPropertiesTable
+RINDEX
+2e-06	1.365
+3e-06	1.365
+4.2e-06	1.365
+ AddDiscreteProcess to OpticalPhoton 
+
+conv:   for  gamma    SubType= 14  BuildTable= 1
+      Lambda table from 1.022 MeV to 10 TeV, 20 bins per decade, spline: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        BetheHeitler :  Emin=        0 eV    Emax=       80 GeV
+     BetheHeitlerLPM :  Emin=       80 GeV   Emax=       10 TeV
+
+compt:   for  gamma    SubType= 13  BuildTable= 1
+      Lambda table from 100 eV  to 1 MeV, 7 bins per decade, spline: 1
+      LambdaPrime table from 1 MeV to 10 TeV in 49 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       Klein-Nishina :  Emin=        0 eV    Emax=       10 TeV
+
+phot:   for  gamma    SubType= 12  BuildTable= 0
+      LambdaPrime table from 200 keV to 10 TeV in 54 bins 
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+       PhotoElectric :  Emin=        0 eV    Emax=       10 TeV   AngularGenSauterGavrila
+
+msc:   for e-    SubType= 10
+      RangeFactor= 0.04, stepLimitType: 1, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+eIoni:   for  e-    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha :  Emin=        0 eV    Emax=       10 TeV
+
+eBrem:   for  e-    SubType= 3
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      LPM flag: 1 for E > 1 GeV
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB :  Emin=        0 eV    Emax=        1 GeV   DipBustGen
+            eBremLPM :  Emin=        1 GeV   Emax=       10 TeV   DipBustGen
+
+msc:   for e+    SubType= 10
+      RangeFactor= 0.04, stepLimitType: 1, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+eIoni:   for  e+    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+        MollerBhabha :  Emin=        0 eV    Emax=       10 TeV
+
+eBrem:   for  e+    SubType= 3
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      LPM flag: 1 for E > 1 GeV
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+             eBremSB :  Emin=        0 eV    Emax=        1 GeV   DipBustGen
+            eBremLPM :  Emin=        1 GeV   Emax=       10 TeV   DipBustGen
+
+annihil:   for  e+, integral: 1     SubType= 5  BuildTable= 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            eplus2gg :  Emin=        0 eV    Emax=       10 TeV
+
+msc:   for proton    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  proton    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=        2 MeV
+          BetheBloch :  Emin=        2 MeV   Emax=       10 TeV
+
+msc:   for GenericIon    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV
+
+hIoni:   for  GenericIon    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=        2 MeV
+          BetheBloch :  Emin=        2 MeV   Emax=       10 TeV
+
+msc:   for alpha    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 0
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  alpha    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=   7.9452 MeV
+          BetheBloch :  Emin=   7.9452 MeV   Emax=       10 TeV
+
+msc:   for anti_proton    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  anti_proton    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO :  Emin=        0 eV    Emax=        2 MeV
+          BetheBloch :  Emin=        2 MeV   Emax=       10 TeV
+
+msc:   for kaon+    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  kaon+    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=  1.05231 MeV
+          BetheBloch :  Emin=  1.05231 MeV   Emax=       10 TeV
+
+msc:   for kaon-    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  kaon-    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO :  Emin=        0 eV    Emax=  1.05231 MeV
+          BetheBloch :  Emin=  1.05231 MeV   Emax=       10 TeV
+
+msc:   for mu+    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  mu+    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=  225.219 keV
+          BetheBloch :  Emin=  225.219 keV   Emax=       10 TeV
+
+msc:   for mu-    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  mu-    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO :  Emin=        0 eV    Emax=  225.219 keV
+          BetheBloch :  Emin=  225.219 keV   Emax=       10 TeV
+
+msc:   for pi+    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  pi+    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+               Bragg :  Emin=        0 eV    Emax=  297.505 keV
+          BetheBloch :  Emin=  297.505 keV   Emax=       10 TeV
+
+msc:   for pi-    SubType= 10
+      RangeFactor= 0.2, stepLimitType: 0, latDisplacement: 1
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            UrbanMsc :  Emin=        0 eV    Emax=       10 TeV  Table with 77 bins Emin=    100 eV    Emax=     10 TeV
+
+hIoni:   for  pi-    SubType= 2
+      dE/dx and range tables from 100 eV  to 10 TeV in 77 bins
+      Lambda tables from threshold to 10 TeV, 7 bins per decade, spline: 1
+      finalRange(mm)= 0.1, dRoverRange= 0.2, integral: 1, fluct: 1, linLossLimit= 0.01
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+            ICRU73QO :  Emin=        0 eV    Emax=  297.505 keV
+          BetheBloch :  Emin=  297.505 keV   Emax=       10 TeV
+G4VDecayChannel::FillDaughters  [ eta_prime ]0:rho0 is not defined !!
+ The BR of this decay mode is set to zero 
+G4VDecayChannel::FillDaughters  [ eta_prime ]0:omega is not defined !!
+ The BR of this decay mode is set to zero 
+G4WT0 > 
+G4WT0 > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+G4WT0 >  Local thread RunManagerKernel version Name: geant4-10-01-patch-03 [MT]
+G4WT0 > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+G4WT0 > 
+G4WT1 > 
+G4WT1 > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+G4WT1 >  Local thread RunManagerKernel version Name: geant4-10-01-patch-03 [MT]
+G4WT1 > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+G4WT1 > 
+G4WT1 >  AddDiscreteProcess to OpticalPhoton 
+G4WT0 >  AddDiscreteProcess to OpticalPhoton 
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Current available graphics systems are:
+  ASCIITree (ATree)
+  DAWNFILE (DAWNFILE)
+  G4HepRep (HepRepXML)
+  G4HepRepFile (HepRepFile)
+  OpenGLImmediateQt (OGLI, OGLIQt)
+  OpenGLImmediateX (OGLIX, OGLI_FALLBACK, OGLIQt_FALLBACK)
+  OpenGLStoredQt (OGL, OGLS, OGLSQt)
+  OpenGLStoredX (OGLSX, OGL_FALLBACK, OGLS_FALLBACK, OGLSQt_FALLBACK)
+  RayTracer (RayTracer)
+  VRML1FILE (VRML1FILE)
+  VRML2FILE (VRML2FILE)
+  gMocrenFile (gMocrenFile)
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByCharge
+  drawByParticleID
+  drawByOriginVolume
+  drawByAttribute
+
+Registered filter factories:
+  chargeFilter
+  particleFilter
+  originVolumeFilter
+  attributeFilter
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+Available colours:
+  black, blue, brown, cyan, gray, green, grey, magenta, red, white, yellow
+
+
+========= Table of registered couples ==============================
+
+Index : 0     used in the geometry : Yes
+ Material : G4_AIR
+ Range cuts        :  gamma  1 mm     e-  100 um     e+  100 um  proton 1 mm 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 100 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : G4_TEFLON
+ Range cuts        :  gamma  1 mm     e-  100 um     e+  100 um  proton 1 mm 
+ Energy thresholds :  gamma  4.34212 keV    e-  120.07 keV    e+  117.673 keV proton 100 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 2     used in the geometry : Yes
+ Material : G4_CESIUM_IODIDE
+ Range cuts        :  gamma  1 mm     e-  100 um     e+  100 um  proton 1 mm 
+ Energy thresholds :  gamma  38.5665 keV    e-  144.928 keV    e+  141.084 keV proton 100 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 3     used in the geometry : Yes
+ Material : epoxy
+ Range cuts        :  gamma  1 mm     e-  100 um     e+  100 um  proton 1 mm 
+ Energy thresholds :  gamma  2.55353 keV    e-  94.2689 keV    e+  92.3874 keV proton 100 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 4     used in the geometry : Yes
+ Material : G4_Si
+ Range cuts        :  gamma  1 mm     e-  100 um     e+  100 um  proton 1 mm 
+ Energy thresholds :  gamma  6.95018 keV    e-  121.694 keV    e+  120.07 keV proton 100 keV
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+====================================================================
+
+### Run 0 start.
+... open Root analysis file : RootOut.root - done
+G4WT1 > ### Run 0 start.
+G4WT0 > ### Run 0 start.
+G4WT0 > ... open Root analysis file : RootOut_t0.root - done
+G4WT0 > >>>>>> Beginning of Event 0 <<<<<<
+G4WT0 > 
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : Warning
+      issued by : G4Step::GetDeltaEnergy()
+This method is obsolete and will be removed soon
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+G4WT1 > ... open Root analysis file : RootOut_t1.root - done
+G4WT1 > 
+-------- WWWW ------- G4Exception-START -------- WWWW -------
+*** G4Exception : Warning
+      issued by : G4Step::GetDeltaEnergy()
+This method is obsolete and will be removed soon
+*** This is just a warning message. ***
+-------- WWWW -------- G4Exception-END --------- WWWW -------
+
+G4WT1 > >>>>>> Beginning of Event 100 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 300 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 600 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 900 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 1100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1200 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1300 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1400 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 1500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1600 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 1700 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 1900 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 2200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2300 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 2500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 2600 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 2800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 2900 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3000 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 3100 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3200 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 3300 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3400 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 3600 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3700 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 3800 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 3900 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 4000 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 4100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 4200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 4300 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 4400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 4500 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 4600 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 4700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 4800 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 4900 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 5000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5100 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5200 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 5300 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 5400 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5500 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5600 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 5700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5800 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 5900 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 6000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 6100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 6200 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 6300 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 6400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 6500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 6600 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 6700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 6800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 6900 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 7100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 7300 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7500 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 7600 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 7800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 7900 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 8000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 8100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 8200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 8300 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 8400 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 8500 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 8600 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 8700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 8800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 8900 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9000 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9100 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 9200 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9300 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 9400 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9500 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 9600 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9700 <<<<<<
+G4WT0 > >>>>>> Beginning of Event 9800 <<<<<<
+G4WT1 > >>>>>> Beginning of Event 9900 <<<<<<
+G4WT1 > ... write Root file : RootOut_t1.root - done
+G4WT1 > ... close Root file : RootOut_t1.root - done
+G4WT1 > Total number of events = 4900
+G4WT1 > Elapsed time: User=1673.51s Real=837.38s Sys=0.58s
+G4WT0 > ... write Root file : RootOut_t0.root - done
+G4WT0 > ... close Root file : RootOut_t0.root - done
+G4WT0 > Total number of events = 5100
+G4WT0 > Elapsed time: User=1676.75s Real=840.64s Sys=0.58s
+... write Root file : RootOut.root - done
+... close Root file : RootOut.root - done
+Total number of events = 10000
+Elapsed time: User=1676.76s Real=840.66s Sys=0.58s
+Graphics systems deleted.
+Visualization Manager deleting...

@@ -17,7 +17,7 @@
 #/gps/pos/type Beam
 #/gps/pos/shape Circle
 /gps/pos/type Point 
-/gps/pos/centre 3.115 3.115 -40 mm
+/gps/pos/centre 0. 0. -40 mm
 #/gps/pos/centre -0.5 0.5 -40 mm
 #/gps/pos/centre -11.5 11.5 -40 mm
 #/gps/pos/radius 0.7 mm

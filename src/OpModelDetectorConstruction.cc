@@ -66,7 +66,7 @@ G4VPhysicalVolume* OpModelDetectorConstruction::Construct()
 {
 
 // Enable volume overlap checking
-  G4bool checkOverlaps = true;
+  G4bool checkOverlaps = false;
 
 // ------------- Materials -------------
 
