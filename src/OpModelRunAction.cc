@@ -87,20 +87,22 @@ void OpModelRunAction::BeginOfRunAction(const G4Run* aRun)
 
   analysisManager->CreateNtupleIColumn("hits");	// Column ID 0;
 // Vectors of photon hits
-  analysisManager->CreateNtupleDColumn("x",eventAction->GetVecX());
-	analysisManager->CreateNtupleDColumn("y",eventAction->GetVecY());
-	analysisManager->CreateNtupleDColumn("z",eventAction->GetVecZ());
-	analysisManager->CreateNtupleDColumn("t",eventAction->GetVecT());
-	analysisManager->CreateNtupleDColumn("E",eventAction->GetVecE());	// Column ID 5;
-	analysisManager->CreateNtupleIColumn("sipmID",eventAction->GetVecDetID());
+//  analysisManager->CreateNtupleDColumn("x",eventAction->GetVecX());
+//	analysisManager->CreateNtupleDColumn("y",eventAction->GetVecY());
+//	analysisManager->CreateNtupleDColumn("z",eventAction->GetVecZ());
+//	analysisManager->CreateNtupleDColumn("t",eventAction->GetVecT());
+//	analysisManager->CreateNtupleDColumn("E",eventAction->GetVecE());	// Column ID 5;
+//	analysisManager->CreateNtupleIColumn("sipmID",eventAction->GetVecDetID());
 // Energy deposited by gamma ray
-	analysisManager->CreateNtupleDColumn("Egam"); // Column ID 7
-	analysisManager->CreateNtupleIColumn("gammaHits"); // Column 8
+	analysisManager->CreateNtupleDColumn("Egam"); // Column ID 1
+	analysisManager->CreateNtupleIColumn("gammaHits"); // Column 2
 // Vectors of gamma hits
 	analysisManager->CreateNtupleIColumn("process",eventAction->GetProcess());
-  analysisManager->CreateNtupleDColumn("xGam",eventAction->GetVecXGamma());	// Column ID 10
+  analysisManager->CreateNtupleDColumn("xGam",eventAction->GetVecXGamma());	// Column ID 4
   analysisManager->CreateNtupleDColumn("yGam",eventAction->GetVecYGamma());
-  analysisManager->CreateNtupleDColumn("zGam",eventAction->GetVecZGamma());	// Column ID 12
+  analysisManager->CreateNtupleDColumn("zGam",eventAction->GetVecZGamma());	// Column ID 6
+  
+  analysisManager->CreateNtupleIColumn("sipmHits",eventAction->GetVecSipmHits());	// Column ID 6
 
 // Hits per SiPM
 //  analysisManager->CreateNtupleIColumn("hits0"); // Column 13
@@ -110,14 +112,14 @@ void OpModelRunAction::BeginOfRunAction(const G4Run* aRun)
 //  analysisManager->CreateNtupleIColumn("hits4"); // Column 17
 //  analysisManager->CreateNtupleIColumn("hits5"); // Colunm 18
 // Hits per SiPM if using array of 64 pixels
-	G4String detectorString;
-	std::stringstream ss;
-  for(G4int i=0;i<64;i++) {
-		ss.str("");
-		ss << "sipm" << i;
-		detectorString = ss.str();
-		analysisManager->CreateNtupleIColumn(detectorString); // Colunm 13 to 77
-	}
+//	G4String detectorString;
+//	std::stringstream ss;
+//  for(G4int i=0;i<64;i++) {
+//		ss.str("");
+//		ss << "sipm" << i;
+//		detectorString = ss.str();
+//		analysisManager->CreateNtupleIColumn(detectorString); // Colunm 7 to 71
+//	}
 	
   analysisManager->FinishNtuple();
 
