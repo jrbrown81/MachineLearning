@@ -1,2 +1,6 @@
+.DS_Store
 *.root
 *.swp
+*.log
+results/
+build/CMakeFiles
