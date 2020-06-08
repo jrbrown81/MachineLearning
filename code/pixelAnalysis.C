@@ -5,6 +5,7 @@
 #include <TCanvas.h>
 
 TString path="/home/userfs/j/jb536/physnp/simulations/geant4/optical/myOpModel/CsI/50x50x12.5mm/results/";
+//TString path="./";
 
 void pixelAnalysis(TString filename, Bool_t outputCSV=0, Bool_t outputROOT=0) {
 
@@ -98,7 +99,7 @@ void pixelAnalysisClass::Loop(TString filename, Bool_t outputCSV=0)
       
 			if(outputCSV && gammaHits==1) {
 				for(int i=0;i<64;i++) csvOut << (double)(*sipmHits)[i]/hits << ",";
-				csvOut << hits << "\n";
+				csvOut << hits << "," << (*xGam)[0] << "," << (*yGam)[0] << "\n";
 			}
       
    }
